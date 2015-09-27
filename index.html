@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html ng-app="ionicApp">
+  <head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link data-require="ionic@1.0.0-beta6" data-semver="1.0.0-beta6" rel="stylesheet" href="http://code.ionicframework.com/1.0.0-beta.6/css/ionic.css" />
+    <style type="text/css">
+      .done {text-decoration: line-through;}
+    </style>
+  </head>
+
+  <body>
+    <ion-nav-view></ion-nav-view>
+
+    <script type="text/ng-template" id="main.html">
+      <ion-nav-bar class="bar-positive">
+        <ion-nav-back-button class="button-clear">
+          <i class="ion-arrow-left-c"></i> Back
+        </ion-nav-back-button>
+      </ion-nav-bar>
+      <ion-tabs class="tabs-positive">
+      <ion-tab icon="ion-home" data-ng-if="isLoggedIn" ui-sref="app.restaurantes">
+        <ion-nav-view name="restaurantes"></ion-nav-view>
+      </ion-tab>
+        <ion-tab icon="ion-person" data-ng-if="!isLoggedIn" ui-sref="app.auth">
+          <ion-nav-view name="auth"></ion-nav-view>
+        </ion-tab>
+        <ion-tab icon="ion-help" data-ng-if="isLoggedIn" ui-sref="app.help">
+          <ion-nav-view name="help"></ion-nav-view>
+        </ion-tab>
+        <ion-tab icon="ion-paper-airplane" data-ng-if="isLoggedIn" ui-sref="app.contact">
+          <ion-nav-view name="contact"></ion-nav-view>
+        </ion-tab>
+      </ion-tabs>
+    </script>
+
+    <script type="text/ng-template" id="auth.html">
+      <ion-nav-view></ion-nav-view>
+    </script>
+    <script type="text/ng-template" id="index.html">
+    <ion-view title="Pedido Online">
+        <ion-content>
+          <ion-list>
+            <ion-item class="item item-icon-right" ui-sref="app.auth.login">Login
+              <i class="icon ion-ios7-arrow-right"></i>
+            </ion-item>
+            <ion-item class="item item-icon-right" ui-sref="app.auth.cadastro">Cadastro
+              <i class="icon ion-ios7-arrow-right"></i>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-view>
+    </script>
+    <script type="text/ng-template" id="login.html">
+    <ion-view title="Login">
+        <ion-content>
+          <label class="item item-input">
+            <input 
+              type="text" 
+              placeholder="Username" 
+              data-ng-model="user.username">
+          </label>
+          <label class="item item-input">
+            <input
+              placeholder="Password" 
+              type="password" 
+              data-ng-model="user.password">
+          </label>  
+          <label class="item item-button">
+            <div class="button-bar">
+              <a
+                data-ng-click="login(user)" 
+                class="button button-positive">
+                  Entrar
+              </a>
+              <a
+                ui-sref="app.auth.cadastro" 
+                class="button button-positive">
+                  Cadastro
+              </a>
+            </div>
+          </label>
+          <label class="item" data-ng-if="message">{{message}}</label>  
+        </ion-content>
+      </ion-view>
+    </script>
+    <script type="text/ng-template" id="cadastro.html">
+    <ion-view title="Cadastro">
+        <ion-content>
+          <label class="item item-input">
+            <input 
+              type="text" 
+              placeholder="Username" 
+              data-ng-model="user.username">
+          </label>
+          <label class="item item-input">
+            <input 
+              type="email" 
+              placeholder="Email" 
+              data-ng-model="user.email">
+          </label>
+          <label class="item item-input">
+            <input
+              placeholder="Confirm Email" 
+              type="email" 
+              data-ng-model="confirmEmail">
+          </label>
+          <label class="item item-input">
+            <input
+              placeholder="Password" 
+              type="password" 
+              data-ng-model="user.password">
+          </label>   
+          <label class="item item-input">
+            <input
+              placeholder="Confirm Senha" 
+              type="password" 
+              data-ng-model="confirmSenha">
+          </label>
+          <label class="item item-input">
+            <ion-radio ng-model="user.role" ng-value="'restaurante_owner'">Estabelecimento</ion-radio>
+            <ion-radio ng-model="user.role" ng-value="'user'">user</ion-radio>
+          </label>
+          <label class="item item-button">
+            <div class="button-bar">
+              <a
+                data-ng-click="cadastrar(user)" 
+                class="button button-positive">
+                  Cadastrar
+              </a>
+              <a
+                ui-sref="app.auth.login" 
+                class="button button-positive">
+                  Ja tenho Cadastro
+              </a>
+            </div>
+          </label>
+          <label class="item item-button" data-ng-if="message">
+          {{message}}
+          </label>
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script type="text/ng-template" id="restaurantes.html">
+      <ion-view title="Restaurantes">
+        <ion-content>
+          <ion-list>
+            <ion-item ng-repeat="restaurante in restaurantes" class="item item-icon-right" ui-sref="app.restaurantes.detail({restaurante: restaurante.id})">
+              <span ng-class="{done: restaurante.open}">{{restaurante.name}}</span>
+              <i class="icon ion-ios7-arrow-right"></i>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-view>
+    </script>
+    <script type="text/ng-template" id="restaurantesView.html">
+      <ion-nav-view></ion-nav-view>
+    </script>
+    <script type="text/ng-template" id="restaurante.html">
+      <ion-view title="Restaurante">
+        <ion-content>
+          <div class="card">
+            <div class="item item-avatar">
+              <img src="avatar.jpg">
+              <h2>{{restaurante.name}}</h2>
+              <p>{{restaurante.phone}}</p>
+              <p>{{restaurante.address}}</p>
+            </div>
+          </div>
+          <button 
+              class="button button-full button-positive">
+            Gerar Comanda
+          </button>
+          <div class="card">
+          <div class="item item-text-wrap">
+                Comanda Atual - Total:55,00
+            </div>
+            <ion-list>
+              <ion-item ng-repeat="item in [1]">
+                Hello, {{item}}!
+              </ion-item>
+            </ion-list>
+            <div class="item item-text-wrap">
+              Comandas Anteriores
+            </div>
+            <ion-list>
+              <ion-item ng-repeat="item in [1,2,3]">
+                Hello, {{item}}!
+              </ion-item>
+            </ion-list>
+          </div>
+          <button 
+              class="button button-full button-positive">
+            Encerrar Comanda
+          </button>
+        </ion-content>
+      </ion-view>
+    </script>
+
+    <script type="text/ng-template" id="help.html">
+      <ion-view title="Help">
+        <ion-content padding="true">
+           <h2>Using the app</h2>
+           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis architecto hic officia quasi excepturi sequi deleniti maiores consectetur veritatis sint?</p>
+        </ion-content>
+      </ion-view>
+    </script>
+
+<script type="text/ng-template" id="contact.html">
+      <ion-view title="contact">
+        <ion-content padding="true">
+           <label class="item">
+              <input
+                  placeholder="Nome"
+                 type="text" 
+                 data-ng-model="user.nome" />
+           </label>
+           <label class="item">
+              <input
+                  placeholder="Email"
+                 type="email" 
+                 data-ng-model="user.email" />
+           </label>
+           <label class="item">
+              <input
+                  placeholder="Contato"
+                 type="tel" 
+                 data-ng-model="user.tel" />
+           </label>
+           <label class="item">
+              <textarea
+                 placeholder="Mensagem"
+                 cols="5"
+                 rows="5"
+                 type="text" 
+                 data-ng-model="user.conteudo" >
+              </textarea>
+           </label>
+           <label class="item item-button">
+            <div class="button-bar">
+              <a
+                data-ng-click="cadastrar(user)" 
+                class="button button-positive">
+                  Cadastrar
+              </a>
+              <a
+                ui-sref="app.auth.login" 
+                class="button button-positive">
+                  Voltar
+              </a>
+            </div>
+          </label>
+        </ion-content>
+      </ion-view>
+    </script>
+
+
+    
+    <script data-require="ionic@1.0.0-beta6" data-semver="1.0.0-beta6" src="http://code.ionicframework.com/1.0.0-beta.6/js/ionic.bundle.js"></script>
+    <script type="text/javascript" src="libs/ionic/js/angular/angular-resource.js"></script>
+    <script type="text/javascript" src="assets/js/services/AuthServices.js"></script>
+    <script type="text/javascript" src="assets/js/app.js"></script>
+  </body>
+</html>
